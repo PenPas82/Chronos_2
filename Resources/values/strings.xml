@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Chronos_2</string>
+    <string name="title_home">Domicile</string>
+    <string name="title_dashboard">Message</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_envoi">envoi document</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+  <string name="get_last_location_button_text">Get Last Location</string>
+  <string name="latitude_string">Latitude: %1$f</string>
+  <string name="longitude_string">Longitude: %1$f</string>
+  <string name="location_unavailable">Unavailable.</string>
+  <string name="missing_googleplayservices_terminating">Google Play Service n est pas Installé </string>
+  <string name="ok">Ok</string>
+  <string name="permission_location_rationale">This sample requires permission to access the device location, or else it will not work.</string>
+<string name="permission_not_granted_termininating_app">Location permissions not granted - terminating this sample.</string>
+</resources>
