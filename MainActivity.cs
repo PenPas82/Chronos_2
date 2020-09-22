@@ -24,13 +24,30 @@ using Android.Support.V4.App;
 namespace Chronos_2
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener
+    public class MainActivity : AppCompatActivity, 
+        BottomNavigationView.IOnNavigationItemSelectedListener
     {
+        const long INTERVAL = 5;
+
+        const long FASTESTINTERVAL = INTERVAL * 500;
+        const long LOCATIONINTERVAL = INTERVAL * 1000;
+
+        const long TEN_SECONDS = 10 * 1000;
+        const long FIVE_SECONDES = 5 * 1000;
 
         const long ONE_MINUTE = 60 * 1000;
         const long FIVE_MINUTES = 5 * ONE_MINUTE;
         const long TWO_MINUTES = 2 * ONE_MINUTE;
+
+        private const string DISTANCE_KEY = "distanceparcourue";
         private const string DTSTART_KEY = "DtStart";
+        private const string REQUESTING_KEY = "isRequestingLocationUpdates";
+
+        private const string LATITUDESTART_KEY = "LatitudeStart";
+        private const string LONGITUDESTART_KEY = "LongitudeStart";
+        private const string LATITUDELAST_KEY = "LatitudeLast";
+        private const string LONGITUDELAST_KEY = "LongitudeLast";
+
         private const string TIME_KEY = "Time";
 
         //private DateTime _DtStart;
@@ -48,25 +65,41 @@ namespace Chronos_2
         TextView latitude;
         TextView longitude;
 
+        internal Android.Locations.Location startcoordonnées = null;
+        private double LatitudeStart = 0;
+        private double LongitudeStart = 0;
+
+        private double LatitudeLast = 0;
+        private double LongitudeLast = 0;
+
         internal Boolean Mouvement = false;
+        internal Android.Locations.Location coordonnées = null;
+        internal Android.Locations.Location lastcoordonnées = null;
+
+        //internal float distance = 0;
+        internal float distanceparcourue = 0;
+
 
         internal TextView latitude2;
         internal TextView longitude2;
+
         bool isGooglePlayServicesInstalled;
         bool isRequestingLocationUpdates;
 
-        TextView textMessage;
+        internal TextView textMessage;
         DateTime dtstart = new DateTime();
         DateTime dtstop = new DateTime();
         private long _max = new TimeSpan(4,0,0).Ticks; // temps max de conduite
 
         private int numberToCompute = 1;
+        private double DeltaTime = 0;
 
         private BackgroundWorker backgroundWorker1;
 
         internal Button startandstop;
         internal RadioButton radiostop;
 
+        private string proges = "";
         private string backingFile;
         private string backingFileEtape;
 
@@ -120,37 +153,46 @@ namespace Chronos_2
             {
                 locationRequest = new LocationRequest()
                                   .SetPriority(LocationRequest.PriorityHighAccuracy)
-                                  .SetInterval(FIVE_MINUTES)
-                                  .SetFastestInterval(TWO_MINUTES);
-                locationCallback = new FusedLocationProviderCallback(this);
-             
-                //locationCallback.
-                fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient(this);
+                                  .SetInterval(LOCATIONINTERVAL)
+                                  .SetFastestInterval(FASTESTINTERVAL);
 
-                
-               // getLastLocationButton.Click += GetLastLocationButtonOnClick;
-               // requestLocationUpdatesButton.Click += RequestLocationUpdatesButtonOnClick;
+                locationCallback = new FusedLocationProviderCallback(this);
+
+                fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient(this);
             }
             else
             {
-               // Snackbar.Make(rootLayout)
-                // If there is no Google Play Services installed, then this sample won't run.
                 Snackbar.Make(rootLayout, Resource.String.missing_googleplayservices_terminating, Snackbar.LengthIndefinite)
                         .SetAction(Resource.String.ok, delegate { FinishAndRemoveTask(); })
                         .Show();
             }
+
             InitializeBackgroundWorker();
         }
 
         private void Radiostop_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            //throw new NotImplementedException();
-            var beep = 1;
+            if (e.IsChecked)
+            {
+                var etape = new Etape() { jour = dtstart.Date, heure = DateTime.Now.TimeOfDay, lieu = coordonnées.ToString(), commentaire = "Depart" };
+            }
+            else
+            {
+                var etape = new Etape() {
+                    jour = dtstart.Date,
+                    modeaction = ModeAction.Pause,
+                    heure = DateTime.Now.TimeOfDay, 
+                    lieu = coordonnées.ToString(), 
+                    commentaire = "Arret " 
+                };
+            }
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
         {
-            outState.PutLong("DtStart", dtstart.Ticks);
+            outState.PutLong(DTSTART_KEY, dtstart.Ticks);
+            outState.PutFloat(DISTANCE_KEY, distanceparcourue);
+            outState.PutBoolean(REQUESTING_KEY, isRequestingLocationUpdates);
             base.OnSaveInstanceState(outState);
         }
 
@@ -159,12 +201,10 @@ namespace Chronos_2
             base.OnRestoreInstanceState(savedInstanceState);
             var n = savedInstanceState.GetLong(DTSTART_KEY);
             dtstart = new DateTime(n);
-
+            distanceparcourue = savedInstanceState.GetFloat(DISTANCE_KEY);
+            isRequestingLocationUpdates = savedInstanceState.GetBoolean(REQUESTING_KEY);
         }
-        private void HandleState(Bundle bundle)
-        {
 
-        }
         /// <summary>
         /// Envoie message
         /// </summary>
@@ -191,17 +231,12 @@ namespace Chronos_2
         {
             base.OnStart();
         }
-        /// <summary>
-        /// 
-        /// </summary>
         protected override void OnPause()
         {
             base.OnPause();
+
             SaveEtapes();
         }
-        /// <summary>
-        /// 
-        /// </summary>
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -217,13 +252,15 @@ namespace Chronos_2
             if (dtstart == new DateTime())// & !backgroundWorker1.IsBusy)
             {
                 dtstart = DateTime.Now;
-                var q1 = ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation);
+              //  var q1 = ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation);
 
                 if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation) == Permission.Granted)
                 {
                     //await GetLastLocationFromDevice();
-                    await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
-
+                    //await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
+                    
+                    await StartRequestingLocationUpdates();
+                    isRequestingLocationUpdates = true;
                 }
                 else
                 {
@@ -269,7 +306,7 @@ namespace Chronos_2
         /// <param name="worker"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        long Incremment(int n, BackgroundWorker worker, DoWorkEventArgs e)
+        private long Incremment(int n, BackgroundWorker worker, DoWorkEventArgs e)
         {
             long result = DateTime.Now.Ticks;
             DateTime DtDepart = DateTime.Now;
@@ -286,23 +323,30 @@ namespace Chronos_2
             }
             return result;
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private async void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string texte = "";
-
+            int reste;
             BackgroundWorker ctl = (BackgroundWorker)sender;
-
             if (ctl.IsBusy) 
             { 
                 double hh = ((TimeSpan)e.UserState).Hours;
                 double mm = ((TimeSpan)e.UserState).Minutes;
                 double ss = ((TimeSpan)e.UserState).Seconds;
                 texte = $"{hh}:{mm}:{ss}";
+
+                Math.DivRem((int)ss, (int)INTERVAL, out reste);
+                textMessage.Text = reste.ToString();
+                if(reste == 0)
+                {
+                    await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
+                }
             }
             else
             {
@@ -310,14 +354,16 @@ namespace Chronos_2
             }
             startandstop.Text = texte;//((TimeSpan)e.UserState).ToString("hh:mm:ss");
         }
+       
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             startandstop.Text = "Domicile";
+            await RemoveRequestingLocationUpdates();
         }
         /// <summary>
         /// Inititialisation des taches de travail de fond 
@@ -406,34 +452,56 @@ namespace Chronos_2
             return false;
         }
         
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        /// 
         private async Task GetLastLocationFromDevice()
         {
-            //getLastLocationButton.SetText(Resource.String.getting_last_location);
-            var location = await fusedLocationProviderClient.GetLastLocationAsync();
+            coordonnées = await fusedLocationProviderClient.GetLastLocationAsync();
 
-            if (location == null)
+            if (coordonnées == null)
             {
                 latitude2.SetText(Resource.String.location_unavailable);
                 longitude2.SetText(Resource.String.location_unavailable);
-                //provider.SetText(Resource.String.could_not_get_last_location);
             }
             else
             {
-                latitude2.Text = Resources.GetString(Resource.String.latitude_string, location.Latitude);
-                longitude2.Text = Resources.GetString(Resource.String.longitude_string, location.Longitude);
-               // provider.Text = Resources.GetString(Resource.String.provider_string, location.Provider);
-                //getLastLocationButton.SetText(Resource.String.get_last_location_button_text);
+                if(lastcoordonnées != null)
+                {
+                    if (coordonnées.Latitude == lastcoordonnées.Latitude && coordonnées.Longitude == lastcoordonnées.Longitude)
+                    {
+                        radiostop.Checked = false;
+                    }
+                    else
+                    {
+                        if(radiostop.Checked == false)
+                        {
+                            radiostop.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    LatitudeStart = coordonnées.Latitude;
+                    LongitudeStart = coordonnées.Longitude;
+                    var etape = new Etape() { jour = dtstart.Date, heure = DateTime.Now.TimeOfDay, lieu = coordonnées.ToString(), commentaire = "Depart de la tournée" };
+                }
+                lastcoordonnées = coordonnées;
+                latitude2.Text = Resources.GetString(Resource.String.latitude_string, coordonnées.Latitude);
+                longitude2.Text = Resources.GetString(Resource.String.longitude_string, coordonnées.Longitude);
             }
         }
 
         async Task StartRequestingLocationUpdates()
         {
-            //requestLocationUpdatesButton.SetText(Resource.String.request_location_in_progress_button_text);
-            await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
+           await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);      
+        }
+        async  Task RemoveRequestingLocationUpdates()
+        {
+            await fusedLocationProviderClient.RemoveLocationUpdatesAsync(locationCallback);
         }
 
         /// <summary>

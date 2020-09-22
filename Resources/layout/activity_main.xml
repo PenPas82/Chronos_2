@@ -10,7 +10,7 @@
          android:id="@+id/radiostop"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:checked="false"/>
+         android:checked="false" />
 
     <Button
         android:id="@+id/button_start"
