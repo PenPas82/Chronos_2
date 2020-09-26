@@ -17,8 +17,8 @@ namespace Chronos_2
     public class HistoriqueActivity : Activity, BottomNavigationView.IOnNavigationItemSelectedListener
     {
 
-
-        private string[] doc = new string[] { };
+        private string doc = "";
+        //private string[] doc = new string[] { };
         private string texte = "";
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -26,19 +26,43 @@ namespace Chronos_2
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_historique);
 
+            TextView textView = FindViewById<TextView>(Resource.Id.textView1);
+            textView.Clickable = true;
+            textView.Click += TextView_Click;
+
+            //textView.CreateContextMenu
             // var button = FindViewById<FloatingActionButton>(Resource.Id.fab);
             // button.Click += Button_Click;
 
-            BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
-            navigation.SetOnNavigationItemSelectedListener(this);
+           // BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
+           // navigation.SetOnNavigationItemSelectedListener(this);
 
-            ListView listView = FindViewById<ListView>(Resource.Id.listView1);
+           // ListView listView = FindViewById<ListView>(Resource.Id.listView1);
+            //listView.Drag += ListView_Drag;
+            //listView.Click += ListView_Click;
+            doc = Intent.GetStringExtra("Doc");
 
-            doc = Intent.GetStringArrayExtra("Doc");
             if (doc.Length > 0)
             {
-                listView.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleListItem1, doc);
+                textView.Text = doc;
             }
+        }
+
+        private void TextView_Click(object sender, EventArgs e)
+        {
+            // throw new NotImplementedException();
+            StartActivity(typeof(MainActivity));
+            //return true;
+        }
+
+        private void ListView_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ListView_Drag(object sender, View.DragEventArgs e)
+        {
+           // throw new NotImplementedException();
         }
 
 

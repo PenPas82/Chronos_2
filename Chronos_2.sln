@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos_2", "Chronos_2.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "..\Models\Models.csproj", "{C503BD75-E14A-44EA-B834-D0EC1D6A1899}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{3FF0D67A-1272-433A-8083-AD4EFB4E1DE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Historique", "..\Historique\Historique.csproj", "{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,16 @@ Global
 		{C503BD75-E14A-44EA-B834-D0EC1D6A1899}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C503BD75-E14A-44EA-B834-D0EC1D6A1899}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C503BD75-E14A-44EA-B834-D0EC1D6A1899}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FF0D67A-1272-433A-8083-AD4EFB4E1DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF0D67A-1272-433A-8083-AD4EFB4E1DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF0D67A-1272-433A-8083-AD4EFB4E1DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF0D67A-1272-433A-8083-AD4EFB4E1DE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E7C52A-1C7B-4EE4-A923-0B1AFE4E90BB}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

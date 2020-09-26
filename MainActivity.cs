@@ -20,6 +20,8 @@ using Android;
 using Android.Content.PM;
 using System.Threading.Tasks;
 using Android.Support.V4.App;
+using System.Globalization;
+using Xamarin.Android;
 
 namespace Chronos_2
 {
@@ -27,31 +29,30 @@ namespace Chronos_2
     public class MainActivity : AppCompatActivity, 
         BottomNavigationView.IOnNavigationItemSelectedListener
     {
-        const long INTERVAL = 5;
+        const long INTERVAL = 1;
 
         const long FASTESTINTERVAL = INTERVAL * 500;
         const long LOCATIONINTERVAL = INTERVAL * 1000;
 
-        const long TEN_SECONDS = 10 * 1000;
-        const long FIVE_SECONDES = 5 * 1000;
+       // const long TEN_SECONDS = 10 * 1000;
+      //  const long FIVE_SECONDES = 5 * 1000;
 
-        const long ONE_MINUTE = 60 * 1000;
-        const long FIVE_MINUTES = 5 * ONE_MINUTE;
-        const long TWO_MINUTES = 2 * ONE_MINUTE;
+      //  const long ONE_MINUTE = 60 * 1000;
+      //  const long FIVE_MINUTES = 5 * ONE_MINUTE;
+      //  const long TWO_MINUTES = 2 * ONE_MINUTE;
 
         private const string DISTANCE_KEY = "distanceparcourue";
         private const string DTSTART_KEY = "DtStart";
         private const string REQUESTING_KEY = "isRequestingLocationUpdates";
+        private const string TOURNEE_KEY = "tournée";
 
-        private const string LATITUDESTART_KEY = "LatitudeStart";
-        private const string LONGITUDESTART_KEY = "LongitudeStart";
-        private const string LATITUDELAST_KEY = "LatitudeLast";
-        private const string LONGITUDELAST_KEY = "LongitudeLast";
+       // private const string LATITUDESTART_KEY = "LatitudeStart";
+      //  private const string LONGITUDESTART_KEY = "LongitudeStart";
+      //  private const string LATITUDELAST_KEY = "LatitudeLast";
+      //  private const string LONGITUDELAST_KEY = "LongitudeLast";
 
-        private const string TIME_KEY = "Time";
+       // private const string TIME_KEY = "Time";
 
-        //private DateTime _DtStart;
-       // private TimeSpan _Time;
         private static readonly int RC_LAST_LOCATION_PERMISSION_CHECK = 1000;
         private static readonly int RC_LOCATION_UPDATES_PERMISSION_CHECK = 1100;
 
@@ -64,6 +65,13 @@ namespace Chronos_2
         TextView provider;
         TextView latitude;
         TextView longitude;
+        TextView datejour;
+
+        internal TextView textdistance;
+        internal TextView textheure;
+        internal TextView latitude2;
+        internal TextView longitude2;
+        internal TextView textMessage;
 
         internal Android.Locations.Location startcoordonnées = null;
         private double LatitudeStart = 0;
@@ -77,22 +85,24 @@ namespace Chronos_2
         internal Android.Locations.Location lastcoordonnées = null;
 
         //internal float distance = 0;
-        internal float distanceparcourue = 0;
+        internal long distanceparcourue = 0;
 
-
-        internal TextView latitude2;
-        internal TextView longitude2;
+      //  static private CultureInfo myCIintl = new CultureInfo("fr-FR", false);
+        //static System.
 
         bool isGooglePlayServicesInstalled;
         bool isRequestingLocationUpdates;
 
-        internal TextView textMessage;
-        DateTime dtstart = new DateTime();
-        DateTime dtstop = new DateTime();
+        // Variable date 
+        private DateTime dtjour = new DateTime();      
+        private DateTime dtstart = new DateTime();
+        private DateTime dtstop = new DateTime();
+        private TimeSpan heure = new TimeSpan();
+        private TimeSpan DeltaTime = new TimeSpan();
+
         private long _max = new TimeSpan(4,0,0).Ticks; // temps max de conduite
 
         private int numberToCompute = 1;
-        private double DeltaTime = 0;
 
         private BackgroundWorker backgroundWorker1;
 
@@ -105,8 +115,12 @@ namespace Chronos_2
 
         System.Collections.ArrayList historique = new System.Collections.ArrayList();
 
+        public Tour tournée = null;
+
+
         public List<Tour> Data = new List<Tour>();
-        public List<Etape> Etapes = new List<Etape>();
+       // public List<Etape> Etapes = new List<Etape>();
+        public List<Détail> Détails = new List<Détail>();
 
         private string filename;
 
@@ -117,7 +131,10 @@ namespace Chronos_2
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
+            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+
+           // xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             SetContentView(Resource.Layout.activity_main);
             rootLayout = FindViewById(Resource.Id.root_layout);
@@ -127,6 +144,19 @@ namespace Chronos_2
             startandstop = FindViewById<Button>(Resource.Id.button_start);
             startandstop.Click += Startandstop_Click;
 
+            //UI Date du jour
+            datejour = FindViewById<TextView>(Resource.Id.datejour);
+            dtjour = DateTime.Now.Date;
+            string strdt = dtjour.ToString("dd-MM-yyyy");
+            datejour.Text = dtjour.ToString("dddd, dd MMMM yyyy");
+
+            //ui heure
+            textheure = FindViewById<TextView>(Resource.Id.heure);
+
+            //UI distance affichage dans fusedlocation
+            textdistance = FindViewById<TextView>(Resource.Id.distance);
+
+            //UI Message
             textMessage = FindViewById<TextView>(Resource.Id.message);
 
             //UI to display Run off Stop 
@@ -134,18 +164,14 @@ namespace Chronos_2
             radiostop.CheckedChange += Radiostop_CheckedChange;
 
             // UI to display location updates
-            // requestLocationUpdatesButton = FindViewById<Button>(Resource.Id.request_location_updates_button);
             latitude2 = FindViewById<TextView>(Resource.Id.latitude2);
             longitude2 = FindViewById<TextView>(Resource.Id.longitude2);
-           // provider2 = FindViewById<TextView>(Resource.Id.provider2);
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.SetOnNavigationItemSelectedListener(this);
             
-            backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Historique.csv");
-            backingFileEtape = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Etapes.csv");
-
-            LoadEtapes();
+            backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Historique.dat");
+            backingFileEtape = backingFile + "/" + strdt;
 
             isRequestingLocationUpdates = false;
 
@@ -167,32 +193,63 @@ namespace Chronos_2
                         .Show();
             }
 
+            if (savedInstanceState != null)
+            {
+                var beep = 1;
+            }
+
+
             InitializeBackgroundWorker();
+
+            //ResetHistorique();
+
         }
 
+        /// <summary>
+        /// Changement de conduite 
+        /// création d'une  ligne détail et mise a jour de la tournée en cour
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Radiostop_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            if (e.IsChecked)
+            Détail item = null;
+            if (e.IsChecked)   // Stop -> Start
             {
-                var etape = new Etape() { jour = dtstart.Date, heure = DateTime.Now.TimeOfDay, lieu = coordonnées.ToString(), commentaire = "Depart" };
+                item = new Détail()
+                {
+                    modeaction = StopOffSart.Start,
+                    heure = DateTime.Now.TimeOfDay,
+                    distance = distanceparcourue,
+                    durée =  DeltaTime,
+                    latitude = coordonnées.Altitude,
+                    longitude = coordonnées.Longitude,
+                };
             }
             else
             {
-                var etape = new Etape() {
-                    jour = dtstart.Date,
-                    modeaction = ModeAction.Pause,
-                    heure = DateTime.Now.TimeOfDay, 
-                    lieu = coordonnées.ToString(), 
-                    commentaire = "Arret " 
+                item = new Détail()
+                {
+                    modeaction = StopOffSart.Stop,
+                    heure = DateTime.Now.TimeOfDay,
+                    distance =distanceparcourue,
+                    durée = DeltaTime,
+                    latitude = coordonnées.Altitude,
+                    longitude = coordonnées.Longitude,
                 };
+            }
+            if(tournée != null && item != null)
+            {
+                Détails.Add(item);
             }
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
         {
             outState.PutLong(DTSTART_KEY, dtstart.Ticks);
-            outState.PutFloat(DISTANCE_KEY, distanceparcourue);
+            outState.PutLong(DISTANCE_KEY, distanceparcourue);
             outState.PutBoolean(REQUESTING_KEY, isRequestingLocationUpdates);
+            //outState.PutByteArray(TOURNEE_KEY, tournée.ToByte());
             base.OnSaveInstanceState(outState);
         }
 
@@ -201,8 +258,10 @@ namespace Chronos_2
             base.OnRestoreInstanceState(savedInstanceState);
             var n = savedInstanceState.GetLong(DTSTART_KEY);
             dtstart = new DateTime(n);
-            distanceparcourue = savedInstanceState.GetFloat(DISTANCE_KEY);
+            distanceparcourue = savedInstanceState.GetLong(DISTANCE_KEY);
             isRequestingLocationUpdates = savedInstanceState.GetBoolean(REQUESTING_KEY);
+          //  var buffer = savedInstanceState.GetByteArray(TOURNEE_KEY);
+            //tournée = new Tour(buffer);
         }
 
         /// <summary>
@@ -216,7 +275,7 @@ namespace Chronos_2
             email.PutExtra(Android.Content.Intent.ExtraEmail,new string[] {"p_penchenat@orange.fr"});
 
             email.PutExtra(Android.Content.Intent.ExtraSubject, "Historique");
-            email.PutExtra(Android.Content.Intent.ExtraText, EditEtapes());
+           // email.PutExtra(Android.Content.Intent.ExtraText, EditEtapes());
             email.SetType("message/rfc822");
 
            // email.PutExtra(Android.Content.Intent.ExtraStream, filename);
@@ -226,21 +285,47 @@ namespace Chronos_2
         protected override void OnRestart()
         {
             base.OnRestart();
+            
+            Log.Info("MainActivity", "On Restart -> "+dtstart.ToString());
+            
+            /*
+            if(isRequestingLocationUpdates)
+                await StartRequestingLocationUpdates();
+            */
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            Log.Info("MainActivity", "On Resume");
+
         }
         protected override void OnStart()
         {
             base.OnStart();
+            Log.Info("MainActivity", "On Start");
+
         }
         protected override void OnPause()
         {
             base.OnPause();
+            Log.Info("MainActivity", "On Pause");
+            SaveHistorique();
 
-            SaveEtapes();
+            //Bundle outstate = null;
+            // this.OnSaveInstanceState(outstate);
         }
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            SaveEtapes();
+           // SaveHistorique();
+        }
+        protected override void OnStop()
+        {
+            base.OnStop();
+            Log.Info("MainActivity", "On Stop");
+            SaveHistorique();
+
         }
         /// <summary>
         /// Evenement clik sur bouton Start 
@@ -252,13 +337,8 @@ namespace Chronos_2
             if (dtstart == new DateTime())// & !backgroundWorker1.IsBusy)
             {
                 dtstart = DateTime.Now;
-              //  var q1 = ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation);
-
                 if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation) == Permission.Granted)
                 {
-                    //await GetLastLocationFromDevice();
-                    //await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
-                    
                     await StartRequestingLocationUpdates();
                     isRequestingLocationUpdates = true;
                 }
@@ -266,11 +346,18 @@ namespace Chronos_2
                 {
                     RequestLocationPermission(RC_LAST_LOCATION_PERMISSION_CHECK);
                 }
-
-                // startandstop.Text = "course";
-                // historique.Add($"depart domicile a {dtstart}");
                 backgroundWorker1.RunWorkerAsync(numberToCompute);
-                Etapes.Add(new Etape() { jour = dtstart.Date, heure = dtstart.TimeOfDay, modeaction = ModeAction.Départ });
+               
+                // creation nouvelle tournée //
+                EnumTour modetour = EnumTour.Matin;
+                if (dtstart.Hour > 12) modetour = EnumTour.Soir;
+                tournée = new Tour()
+                {
+                    Jour = dtstart.Date,
+                    Départ = dtstart.TimeOfDay,
+                    Sens = modetour,
+                };
+                Détails = new List<Détail>();
             }
             else
             {
@@ -278,11 +365,11 @@ namespace Chronos_2
 
                 startandstop.SetText(Resource.String.title_home);
                 dtstop = DateTime.Now;
-                Etapes.Add(new Etape() { jour = dtstart.Date, heure = dtstop.TimeOfDay, modeaction = ModeAction.Arrivée });
-                EnumTour modetour = EnumTour.Matin;
-                if (dtstart.Hour > 12) modetour = EnumTour.Soir;
-                Tour tour = new Tour() { Jour = dtstart.Date, Départ = dtstart.TimeOfDay, Arrivée = dtstop.TimeOfDay,Sens = modetour, Effectif =3 };
-                TimeSpan durée = dtstop - dtstart;
+                if (tournée != null)
+                {
+                    tournée.Arrivée = dtstop.TimeOfDay;
+                    tournée.Effectif = 3;
+                }
                 dtstart = new DateTime();
             }
         }
@@ -317,7 +404,6 @@ namespace Chronos_2
                 delta = DateTime.Now - DtDepart;
                 result = delta.Ticks;
                 int percentComplete = (int)((float)delta.Ticks / (float)_max * 100);
-
                 //var activiy = Intent.
                 worker.ReportProgress(percentComplete, delta);
             }
@@ -333,16 +419,15 @@ namespace Chronos_2
         {
             string texte = "";
             int reste;
+            DeltaTime = (TimeSpan)e.UserState;
             BackgroundWorker ctl = (BackgroundWorker)sender;
             if (ctl.IsBusy) 
-            { 
+            {
                 double hh = ((TimeSpan)e.UserState).Hours;
                 double mm = ((TimeSpan)e.UserState).Minutes;
                 double ss = ((TimeSpan)e.UserState).Seconds;
                 texte = $"{hh}:{mm}:{ss}";
-
                 Math.DivRem((int)ss, (int)INTERVAL, out reste);
-                textMessage.Text = reste.ToString();
                 if(reste == 0)
                 {
                     await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, locationCallback);
@@ -353,6 +438,8 @@ namespace Chronos_2
                 texte = "Domicile";
             }
             startandstop.Text = texte;//((TimeSpan)e.UserState).ToString("hh:mm:ss");
+            DateTime dtvar = DateTime.Now;
+            textheure.Text = dtvar.ToShortTimeString();
         }
        
         /// <summary>
@@ -364,6 +451,8 @@ namespace Chronos_2
         {
             startandstop.Text = "Domicile";
             await RemoveRequestingLocationUpdates();
+            SaveHistorique();
+
         }
         /// <summary>
         /// Inititialisation des taches de travail de fond 
@@ -379,7 +468,7 @@ namespace Chronos_2
 
         public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+           // Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             if (requestCode == RC_LAST_LOCATION_PERMISSION_CHECK || requestCode == RC_LOCATION_UPDATES_PERMISSION_CHECK)
             {
@@ -515,17 +604,17 @@ namespace Chronos_2
             switch (item.ItemId)
             {
                 case Resource.Id.navigation_home:
-                    //textMessage.SetText(Resource.String.title_home);
                     return true;
                 case Resource.Id.navigation_dashboard:
-                    //textMessage.SetText(Resource.String.title_dashboard);
+
+                    LoadHistorique();
+
                     var activity = new Intent(this, typeof(HistoriqueActivity));
-                    var doc = EditEtapes();
-                    activity.PutExtra("Doc", doc);
+                    activity.PutExtra("Doc", Data.ToString());
                     StartActivity(activity);
                     return true;
                 case Resource.Id.navigation_notifications:
-                   // textMessage.SetText(Resource.String.title_notifications);
+                    ResetHistorique();
                     return true;
             }
             return false;
@@ -535,20 +624,22 @@ namespace Chronos_2
         /// </summary>
         public void LoadHistorique()
         {
-           // var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Historique.csv");
-
             if (backingFile == null || !File.Exists(backingFile))
             {
                 File.CreateText(backingFile);
                 textMessage.Text = "Creation du fichier " + backingFile;
             }
-
-            using (var reader = new StreamReader(backingFile, true))
+            else
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                textMessage.Text = "Lecture du fichier " + backingFile;
+                using (var filestream = new FileStream(backingFile, FileMode.Open))
                 {
-                    Data.Add(new Tour(line));
+                    if (filestream.Length > 0)
+                    {
+                        byte[] buffer = new byte[filestream.Length];
+                        filestream.Read(buffer);
+                        Data = new Tournées(buffer);
+                    }
                 }
             }
         }
@@ -558,17 +649,48 @@ namespace Chronos_2
         /// </summary> 
         public void SaveHistorique()
         {
-            textMessage.Text = "Ecriture du fichier " + backingFile ;
-
-            using (var writer = File.CreateText(backingFile))
+            if(filename != "" || tournée.ToByte().Length > 0)
             {
-                foreach (var item in Data)
+                if (backingFile == null || !File.Exists(backingFile))
                 {
-                    writer.WriteLine(item.ToCsv());
+                    File.CreateText(backingFile);
+                    textMessage.Text = "Creation du fichier " + backingFile;
+                }
+
+                textMessage.Text = "Ecriture du fichier " + backingFile ;
+                using (var filestream = new FileStream(backingFile,FileMode.Append) )
+                {
+                    filestream.Write(tournée.ToByte());
+                }
+
+                if (!Directory.Exists(backingFileEtape))
+                {
+                    Directory.CreateDirectory(backingFileEtape);
+                    textMessage.Text = "Creation du repertoire " + backingFileEtape;
+                }
+                using (var filestream = new FileStream(backingFileEtape+"/Détail.dat", FileMode.Append))
+                {
+                    textMessage.Text = "Ecriture du fichier " + backingFileEtape + "/Détail.dat";
+
+                    foreach (var item in Détails)
+                    {
+                         filestream.Write(item.ToByte());
+                    }
                 }
             }
         }
 
+        public void ResetHistorique()
+        {
+            if (backingFile == null)
+            {
+                if (File.Exists(backingFile))
+                {
+                    File.Delete(backingFile);
+                }
+            }
+        }
+        /*
         /// <summary>
         /// Lecture du fichier Etape.csv
         /// </summary>
@@ -607,7 +729,8 @@ namespace Chronos_2
                 }
             }
         }
-
+        */
+        /*
         public void EditHistorique()
         {
 
@@ -622,6 +745,7 @@ namespace Chronos_2
             }
             return doc.ToArray();
         }
+        */
     }
 }
 

@@ -14,4 +14,6 @@
   <string name="ok">Ok</string>
   <string name="permission_location_rationale">This sample requires permission to access the device location, or else it will not work.</string>
 <string name="permission_not_granted_termininating_app">Location permissions not granted - terminating this sample.</string>
+  <string name="distance_parcourue">Distance %1 Km</string>
+  <string name="date_du_jour">Le %1</string>
 </resources>
