@@ -8,105 +8,147 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.Design.Widget;
+using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Chronos_2.Adapters;
+using Android.Util;
+using System.IO;
+using Systéme.Calendrier;
 
 namespace Chronos_2
 {
     [Activity(Label = "Historique", MainLauncher = false)]
-    public class HistoriqueActivity : Activity, BottomNavigationView.IOnNavigationItemSelectedListener
+    public class HistoriqueActivity : AppCompatActivity
     {
 
-        private string doc = "";
-        //private string[] doc = new string[] { };
-        private string texte = "";
+      //  private string NAMEFILE_HISTORIQUE = "Coordonnées__SEM_.Dat";
+        private Semaine semaine;
+
+        private string _PathFile;
+        private string _NameFile;
+        private Historique historique = null;
+        private ListView ListView_historique;
+        //  private AdapterView AdapterView_histo;
+        private TextView TextView_semaine;
+        private Button bt_prveviou;
+        private Button bt_next;
+
+        //private string name = "";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_historique);
 
-            TextView textView = FindViewById<TextView>(Resource.Id.textView1);
-            textView.Clickable = true;
-            textView.Click += TextView_Click;
+            //Intent
+            _PathFile = Intent.GetStringExtra("NameFile");
+            var data = Intent.GetBundleExtra("Data");
+            var numsem =  data.GetInt("Semaine");
+            var numan = data.GetInt("Année");
+            semaine = new Semaine(numsem);
+            _NameFile = _PathFile.Replace("_SEM_", numsem.ToString());
+            //historique = new Historique(_NameFile);
+            historique = new Historique(semaine);
 
-            //textView.CreateContextMenu
-            // var button = FindViewById<FloatingActionButton>(Resource.Id.fab);
-            // button.Click += Button_Click;
+            //UI Button
+            bt_prveviou = FindViewById<Button>(Resource.Id.button_previou);
+            bt_prveviou.Click += Bt_prveviou_Click;
 
-           // BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
-           // navigation.SetOnNavigationItemSelectedListener(this);
+            bt_next = FindViewById<Button>(Resource.Id.button_next);
+            bt_next.Click += Bt_next_Click;
 
-           // ListView listView = FindViewById<ListView>(Resource.Id.listView1);
-            //listView.Drag += ListView_Drag;
-            //listView.Click += ListView_Click;
-            doc = Intent.GetStringExtra("Doc");
+            TextView_semaine = FindViewById<TextView>(Resource.Id.textView_Semaine);
+            TextView_semaine.Text = semaine.NumSemaine.ToString();
 
-            if (doc.Length > 0)
+            //UI Barre de menu
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar_course);
+            SetActionBar(toolbar);
+            toolbar.InflateMenu(Resource.Menu.menu_historique);
+            toolbar.NavigationOnClick += Toolbar_NavigationOnClick;
+            toolbar.MenuItemClick += Toolbar_MenuItemClick;
+
+            //UI liste des course
+            ListView_historique = FindViewById<ListView>(Resource.Id.listView_course);
+            ListView_historique.Adapter = new Course_Adaptater(this, historique);
+        }
+
+        private void Bt_next_Click(object sender, EventArgs e)
+        {
+            semaine =  semaine.GetNext();
+            TextView_semaine.Text = semaine.NumSemaine.ToString();
+
+            _NameFile = _PathFile.Replace("_SEM_", semaine.NumSemaine.ToString());
+            historique = new Historique(_NameFile);
+            ListView_historique.Adapter = new Course_Adaptater(this, historique);
+        }
+
+        private void Bt_prveviou_Click(object sender, EventArgs e)
+        {
+            semaine = semaine.GetPreviou();
+            TextView_semaine.Text = semaine.NumSemaine.ToString();
+
+            _NameFile = _PathFile.Replace("_SEM_", semaine.NumSemaine.ToString());
+            historique = new Historique(_NameFile);
+            ListView_historique.Adapter = new Course_Adaptater(this, historique);
+        }
+/*
+        private void ListView_historique_ItemLongClick(object sender, AdapterView.ItemLongClickEventArgs e)
+        {
+            Log.Info("HistoriqueActivity.ListView_historique_ItemLongClick", $"=> {e.ToString()}");
+        }
+*/
+        private void Toolbar_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
+        {
+            int id = (int)e.Item.ItemId;
+            switch (id)
             {
-                textView.Text = doc;
+                case Resource.Id.histo_envoi:
+                    EnvoiHistorique();
+                    break;
+                case Resource.Id.histo_reset:
+                    ResetHistorique();
+                    break;
             }
         }
-
-        private void TextView_Click(object sender, EventArgs e)
+/*
+        private void ListView_historique_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            // throw new NotImplementedException();
-            StartActivity(typeof(MainActivity));
-            //return true;
+            Log.Info("HistoriqueActivity.ListView_historique_ItemClick", $"=> {e.ToString()}");
         }
 
-        private void ListView_Click(object sender, EventArgs e)
+        private void ListView_historique_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-
+            //throw new NotImplementedException();
+            Log.Info("HistoriqueActivity.ItemSelected", $"=> {e.ToString()}");
+        }
+*/
+        private void Toolbar_NavigationOnClick(object sender, EventArgs e)
+        {
+            this.Finish();
+            Log.Info("HistoriqueActivity", "Finish");
         }
 
-        private void ListView_Drag(object sender, View.DragEventArgs e)
+        public void EnvoiHistorique()
         {
-           // throw new NotImplementedException();
+            string BodyMessage = historique.Edit_Fiche();
+            var email = new Intent(Android.Content.Intent.ActionSend);
+            email.PutExtra(Android.Content.Intent.ExtraEmail, new string[] { "p_penchenat@orange.fr" });
+            email.PutExtra(Android.Content.Intent.ExtraSubject, "Historique");
+            email.PutExtra(Android.Content.Intent.ExtraText, "Historique de la tournée \r\n"+ BodyMessage);
+            email.SetType("message/rfc822");
+            StartActivity(email);
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public bool OnNavigationItemSelected(IMenuItem item)
+        private void ResetHistorique()
         {
-            //var secondary
-            switch (item.ItemId)
+            if (_NameFile != "")
             {
-                case Resource.Id.navigation_home:
-                    StartActivity(typeof(MainActivity));
-                    return true;
-                case Resource.Id.navigation_dashboard:
-
-                    var email = new Intent(Android.Content.Intent.ActionSend);
-                    email.PutExtra(Android.Content.Intent.ExtraEmail, new string[] { "p_penchenat@orange.fr" });
-
-
-                    foreach (var w in doc)
-                    {
-                        texte += w + "\r\n";
-                    }
-                    email.PutExtra(Android.Content.Intent.ExtraSubject, "Historique");
-                    email.PutExtra(Android.Content.Intent.ExtraText, texte);
-                    email.SetType("message/rfc822");
-
-                    // email.PutExtra(Android.Content.Intent.ExtraStream, filename);
-                    StartActivity(email);
-
-                    return true;
-                case Resource.Id.navigation_notifications:
-                    // textMessage.SetText(Resource.String.title_notifications);
-                    return true;
+                if (File.Exists(_NameFile))
+                {
+                    File.Delete(_NameFile);
+                }
             }
-            return false;
-        }
-
-        private void Button_Click(object sender, EventArgs e)
-        {
-            StartActivity(typeof(MainActivity));
         }
     }
 }

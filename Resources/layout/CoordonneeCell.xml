@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40.0dp"
+    android:longClickable="true">
+
+    <TextView
+        android:id="@+id/Coord_id_cell"
+        android:layout_width="20.0dp"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+
+    <TextView
+        android:id="@+id/Coord_Type_Cell"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+
+    <EditText
+        android:id="@+id/Coord_code_Tour_Cell"
+        android:inputType="text"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+
+    <TextView
+        android:id="@+id/Coord_Nom_Cell"
+        android:layout_width="130dp"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+
+    <TextView
+        android:id="@+id/Coord_latitude_cell"
+        android:layout_width="60.0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1.0dp"/>
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+   
+    <TextView
+        android:id="@+id/Coord_longitude_cell"
+        android:layout_width="60.0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1.0dp"/>
+
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorcadre"/>
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="25dp"
+        android:layout_height="25dp"/>
+</LinearLayout>

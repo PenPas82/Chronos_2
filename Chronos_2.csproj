@@ -41,6 +41,10 @@
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>C:\Users\Pascal\AppData\Local\Xamarin\Mono for Android\Keystore\PenPas\PenPas.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>Pepin007</AndroidSigningStorePass>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -54,8 +58,23 @@
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\Pascal\AppData\Local\Xamarin\Mono for Android\Keystore\pepinlebel\pepinlebel.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>Pepin007</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>Pascal</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>110883</AndroidSigningKeyPass>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Android.Calendrier">
+      <HintPath>D:\Developpement\Android\Librarys\Calendrier\Android.Calendrier\bin\Release\netstandard2.1\Android.Calendrier.dll</HintPath>
+    </Reference>
+    <Reference Include="My_Library">
+      <HintPath>..\My_Library\bin\Release\netstandard2.1\My_Library.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -64,9 +83,26 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\Course_Adaptater.cs" />
+    <Compile Include="Dialog_Update_Coordonnée.cs" />
+    <Compile Include="Models\Coordonnée.cs" />
+    <Compile Include="CoordonnéeActivity.cs" />
+    <Compile Include="Models\Coordonnées.cs" />
+    <Compile Include="Models\Course.cs" />
+    <Compile Include="Dialog_New_Coordonnée.cs" />
+    <Compile Include="Models\Courses.cs" />
+    <Compile Include="Models\Etape.cs" />
+    <Compile Include="CoordonéeAdapter.cs" />
+    <Compile Include="EtapeAdapter.cs" />
     <Compile Include="FusedLocationProviderCallback.cs" />
     <Compile Include="HistoriqueActivity.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Models\Item_Fiche.cs" />
+    <Compile Include="Models\Tournée.cs" />
+    <Compile Include="Models\Tournées.cs" />
+    <Compile Include="Partial_MainActivity.cs" />
+    <Compile Include="Position.cs" />
+    <Compile Include="Models\Historique.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -115,25 +151,13 @@
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
       <Version>28.0.0.3</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
     <PackageReference Include="Xamarin.GooglePlayServices.Location">
       <Version>71.1600.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Models\Models.csproj">
-      <Project>{c503bd75-e14a-44ea-b834-d0ec1d6a1899}</Project>
-      <Name>Models</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_historique.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_historique2.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -144,8 +168,46 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_main_old.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    <AndroidResource Include="Resources\layout\CoordonneeCell.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_etape.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_plus_black_24dp.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Course_Cell.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Etape_Cell.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_coordonnee.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\menu_main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Dialog_Etape.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\menu_etape.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\menu_historique.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\filepaths.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Fiche.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

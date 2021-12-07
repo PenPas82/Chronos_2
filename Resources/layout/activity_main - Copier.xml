@@ -1,0 +1,112 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark" >
+
+
+    <TextView
+        android:id="@+id/datejour"
+        android:layout_width="268.0dp"
+        android:layout_height="33.5dp"
+        android:textColor="@android:color/holo_green_light"
+        android:layout_marginTop="12.0dp"
+        android:layout_centerHorizontal="true"
+        android:autoSizeTextType="uniform" />
+
+    <TextView
+        android:id="@+id/heure"
+        android:layout_width="210.0dp"
+        android:layout_height="33.5dp"
+        android:textColor="@android:color/holo_green_light"
+        android:layout_below="@id/datejour"
+        android:layout_marginTop="12.0dp"
+        android:layout_centerHorizontal="true"
+        android:autoSizeTextType="uniform" />
+
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="179.0dp"
+        android:layout_height="90.0dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:autoSizeTextType="uniform"
+        android:text="@string/button_start" />
+
+    <Button
+        android:id="@+id/button_etape"
+        android:layout_width="179.0dp"
+        android:layout_height="80.0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="420.0dp"
+        android:text="@string/button_start"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_start"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/holo_blue_bright"
+        android:id="@+id/latitude2" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/latitude2"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/holo_blue_bright"
+        android:id="@+id/longitude2" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/darker_gray"
+        android:layout_above="@id/button_start">
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="144.0dp"
+            android:layout_height="46.5dp"
+            android:autoSizeTextType="uniform"
+            android:layout_centerHorizontal="true" />
+
+    </LinearLayout>
+    
+
+
+  <!-- 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+-->  
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/navigation" />
+    
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="35.5dp"
+        android:layout_above="@id/navigation"
+        android:text="@string/title_dashboard" 
+        android:textColor="@android:color/white"
+
+    />
+
+</RelativeLayout>

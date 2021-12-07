@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Chronos_2</string>
-    <string name="title_home">Domicile</string>
-    <string name="title_dashboard">Message</string>
+    <string name="title_home">Historique</string>
+    <string name="title_dashboard">Etape</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_envoi">envoi document</string>
     <string name="button_start">Start</string>
@@ -16,4 +16,33 @@
 <string name="permission_not_granted_termininating_app">Location permissions not granted - terminating this sample.</string>
   <string name="distance_parcourue">Distance %1 Km</string>
   <string name="date_du_jour">Le %1</string>
+  <string name="button_etape">Etape</string>
+  <string name="button_nouvelle_etape">Nouvelle Etape</string>
+  <string name="Titre_Date">Date</string>
+  <string name="Titre_Sens">Sens</string>
+  <string name="Titre_Tour">Tournée</string>
+  <string name="Titre_Dep">Heure Départ</string>
+  <string name="Titre_Arr">Heure Arrivée</string>
+  <string name="Titre_Eff">Nb Enfants</string>
+  <string name="Titre_Id">N°</string>
+  <string name="Titre_Name">Description</string>
+  <string name="Titre_Latitude">Latitude</string>
+  <string name="Titre_Longitude">Longitude</string>
+  <string name="Titre_Type">Type</string>
+  <string name="Titre_Distance">Distance :</string>
+  <string name="Dialog_name">Nom (30 Car max): </string>
+  <string name="Dialog_Scolaire">Etablissement Scolaire (O/N) : </string>
+  <string name="Dialog_Enfant">Domicile Enfant (O/N) : </string>
+  <string name="Dialog_Chauffeur">Domicile Chauffeur (O/N) : </string>
+  <string name="Dialog_Depot">Dépôt (O/N)</string>
+  <string name="Dialog_Num_Etape">N° Etape</string>
+  <string name="Dialog_Coord_Etape">Position : (%1$f , %2$f)</string>
+  <string name="Dialog_Tour">Code Tournée (8 car max) :</string>
+  <string name="Menu_Export">Export</string>
+  <string name="Menu_Reset">Reset</string>
+  <string name="Menu_Historique">Historique</string>
+  <string name="Menu_Etape">Liste des Etapes</string>
+  <string name="Menu_New_Historique">Nouveau Historique</string>
+  <string name="channel_name">Local Notifications</string>
+  <string name="channel_description">The count from MainActivity.</string>
 </resources>

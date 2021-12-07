@@ -5,36 +5,112 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:icon="@drawable/ic_home_black_24dp"/>
-    -->
-    <TextView
-        android:id="@+id/textView1"
+
+
+    <Toolbar
+        android:id="@+id/toolbar_course"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <!-- 
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:navigationIcon="@drawable/abc_btn_radio_material"
+        android:minWidth="25px"
+        android:minHeight="25px">
+    </Toolbar>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_titre">
+        <Button
+            android:id="@+id/button_previou"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Précédente"/>
+        <TextView
+            android:id="@+id/textView_Semaine"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:gravity="center_horizontal"/>
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Suivante"
+            android:minWidth="25px"
+            android:minHeight="25px" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_titre"
+        android:background="@android:color/holo_blue_bright">
+        <TextView
+            android:layout_width="80.0dp"
+            android:layout_height="@dimen/height_titre"
+            android:text="@string/Titre_Date"/>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+
+        <TextView
+            android:layout_width="40.0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Titre_Sens"/>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+
+        <TextView
+            android:layout_width="40.0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Tour"/>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+
+        <TextView
+            android:layout_width="60.0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Titre_Dep"/>
+
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+
+        <TextView
+            android:layout_width="60.0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Titre_Arr"/>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+
+        <TextView
+            android:layout_width="40.0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Eff"/>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorcadre"/>
+    </LinearLayout> 
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/listView_course"
         android:layout_width="match_parent"
-        android:layout_height="471.0dp"
-        android:layout_marginBottom="10.0dp"/>
-
-     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="0dp"
-        android:background="?android:attr/windowBackground"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/navigation_histo" />
-    -->
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

@@ -5,4 +5,5 @@
     <color name="colorAccent">#3498db</color>
   <color name="colorRun">@android:color/holo_blue_light</color>
   <color name="colorStop">@android:color/white</color>
+  <color name="colorcadre">@android:color/black</color>
 </resources>

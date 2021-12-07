@@ -7,11 +7,19 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_dark" >
 
+    <Toolbar
+        android:id="@+id/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:navigationIcon="@drawable/abc_btn_radio_material"/>
 
     <TextView
         android:id="@+id/datejour"
         android:layout_width="268.0dp"
         android:layout_height="33.5dp"
+        android:layout_below="@id/toolbar_main"
         android:textColor="@android:color/holo_green_light"
         android:layout_marginTop="12.0dp"
         android:layout_centerHorizontal="true"
@@ -29,55 +37,159 @@
 
     <Button
         android:id="@+id/button_start"
-        android:layout_width="179.0dp"
-        android:layout_height="90.0dp"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_width="160.0dp"
+        android:layout_height="80.0dp"
+        android:layout_below="@id/heure"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12.0dp"
         android:autoSizeTextType="uniform"
-        android:text="@string/title_home" />
+        android:text="@string/button_start" />
+
+    <Button
+        android:id="@+id/button_etape"
+        android:layout_width="80.0dp"
+        android:layout_height="80.0dp"
+        android:layout_alignTop="@id/button_start"
+        android:layout_toRightOf="@id/button_start"
+        android:text="@string/button_nouvelle_etape"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/latitude2"
+        android:layout_width="140.0dp"
+        android:layout_height="35.5dp"
         android:layout_below="@id/button_start"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/holo_blue_bright"
-        android:id="@+id/latitude2" />
+        android:layout_alignLeft="@id/button_start"
+        android:textColor="@android:color/holo_blue_bright" />
     
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/longitude2"
         android:layout_below="@id/latitude2"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/holo_blue_bright"
-        android:id="@+id/longitude2" />
+        android:layout_width="140.0dp"
+        android:layout_height="35.5dp"
+        android:layout_alignLeft="@id/button_start"
+        android:textColor="@android:color/holo_blue_bright" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="120.0dp"
+        android:layout_height="35.0dp"
+        android:layout_alignLeft="@id/button_etape"
+        android:layout_alignTop="@id/latitude2"
+        android:textColor="@android:color/holo_green_light" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/course_Layout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/darker_gray"
-        android:layout_above="@id/button_start">
-        <RadioButton
-            android:id="@+id/radiostop"
-            android:layout_width="46.0dp"
-            android:layout_height="46.0dp"
-            android:checked="false" />
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/holo_blue_light"
+        android:layout_below="@id/longitude2">
 
         <TextView
-            android:id="@+id/distance"
-            android:layout_width="144.0dp"
-            android:layout_height="46.5dp"
-            android:autoSizeTextType="uniform"
-            android:layout_centerHorizontal="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lieu de Depart"/>
+        <TextView
+            android:id="@+id/course_lieu_depart"
+            android:layout_width="250.0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/course_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/holo_blue_light"
+        android:layout_below="@id/course_Layout1"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Sens"/>
+        <TextView
+            android:id="@+id/sens_cell"
+            android:layout_width="40.0dp"
+            android:layout_height="wrap_content"/>
+        
+         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Dep"/>
+        <TextView
+            android:id="@+id/depart_cell"
+            android:layout_width="80.0dp"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
-    
 
+    <ListView
+        android:id="@+id/etape_listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50.0dp"
+        android:layout_below="@id/course_layout"
+        android:background="@android:color/darker_gray" />
 
-  <!-- 
+    <LinearLayout
+        android:id="@+id/course_layout_End"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/holo_blue_dark"
+        android:layout_above="@id/message"
+        >
+      <!--
+             android:layout_below="@id/etape_listView"
+   <TextView
+            android:id="@+id/date_cell"
+            android:layout_width="120.0dp"
+            android:layout_height="35.0dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Sens"/>
+        <TextView
+            android:id="@+id/sens_cell"
+            android:layout_width="40.0dp"
+            android:layout_height="@dimen/height_ligne"/>
+
+        <TextView
+            android:id="@+id/tour_cell"
+            android:layout_width="40.0dp"
+            android:layout_height="35.0dp"/>
+
+        <TextView
+            android:id="@+id/depart_cell"
+            android:layout_width="80.0dp"
+            android:layout_height="35.0dp"/>
+        -->  
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:text="@string/Titre_Arr"/>
+        
+        <TextView
+            android:id="@+id/arrivee_cell"
+            android:layout_width="80.0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Titre_Distance"/>
+
+        <TextView
+            android:id="@+id/distance_course"
+            android:layout_width="120.0dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+ <!-- 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -85,7 +197,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
--->  
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="wrap_content"
@@ -94,16 +206,17 @@
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation" />  
+        android:layout_below="@id/course_layout_End"
+
+-->  
     
     <TextView
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="35.5dp"
-        android:layout_above="@id/navigation"
+        android:layout_alignParentBottom="true"
         android:text="@string/title_dashboard" 
-        android:textColor="@android:color/white"
-
-    />
+        android:textColor="@android:color/white"/>
 
 </RelativeLayout>

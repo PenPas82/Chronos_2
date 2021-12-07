@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabplus"
+        android:layout_width="24.0dp"
+        android:layout_height="24.0dp"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_plus_black_24dp" />
+
+
+    <ListView
+        android:id="@+id/listView_etape"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/abc_color_highlight_material"/>
+
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

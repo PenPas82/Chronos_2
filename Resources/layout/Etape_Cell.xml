@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_ligne">
+
+    <TextView
+        android:id="@+id/idetape_cell"
+        android:layout_width="40.0dp"
+        android:layout_height="@dimen/height_ligne"/>
+
+    <TextView
+        android:id="@+id/etape_nom_cell"
+        android:layout_width="140.0dp"
+        android:layout_height="@dimen/height_ligne"/>
+
+    <TextView
+        android:id="@+id/arivee_etape"
+        android:layout_width="80.0dp"
+        android:layout_height="@dimen/height_ligne"/>
+    
+    <TextView
+        android:id="@+id/parcour_cell"
+        android:layout_width="80.0dp"
+        android:layout_height="@dimen/height_ligne"/>
+
+</LinearLayout>

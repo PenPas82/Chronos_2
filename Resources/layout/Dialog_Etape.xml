@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/id_coord_etape"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:enabled="false"/>
+
+    <TextView
+        android:id="@+id/coord_etape"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/Dialog_Coord_Etape"/>
+
+    <!--
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="35dp">
+    
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:text="@string/Dialog_Num_Etape" />
+        <EditText
+            android:id="@+id/num_etape"
+            android:layout_width="wrap_content"
+            android:inputType="number"
+            android:layout_height="25dp"
+            android:layout_marginTop="12dp"/>
+    </LinearLayout>
+-->
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/button_chauff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Dialog_Chauffeur"/>
+
+        <RadioButton
+            android:id="@+id/button_Scolaire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Dialog_Scolaire"/>
+
+        <RadioButton
+            android:id="@+id/button_enfant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Dialog_Enfant"/>
+        <RadioButton
+            android:id="@+id/button_depot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Dialog_Depot"/>
+
+    </RadioGroup> 
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/Dialog_name"
+        android:textSize="18dp"/>
+    <EditText
+        android:id="@+id/nom_etape"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/Dialog_Tour"
+        android:textSize="18dp"/>
+    <EditText
+        android:id="@+id/Code_Tour"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:inputType="text"/>
+<!--
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/button_annuler"
+            android:layout_height="40dp"
+            android:layout_width="100dp"
+            android:text="Annuler"/>
+        <Button
+            android:id="@+id/button_Validier"
+            android:layout_height="40dp"
+            android:layout_width="100dp"
+            android:text="Valider"/>
+    </LinearLayout>
+-->
+</LinearLayout>
